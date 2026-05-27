@@ -69,4 +69,5 @@ public class UserController {
 	public ResponseEntity<ApiResponse<List<UserResponse>>> createMultipleUsers(@RequestBody List<UserRequest>  request){
 		return ResponseEntity.ok(ApiResponse.success("User saved with multiple data",userService.createMultipleUsers(request)));
 	}
+	
 }
