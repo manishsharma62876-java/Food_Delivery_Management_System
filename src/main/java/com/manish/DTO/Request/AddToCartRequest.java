@@ -7,6 +7,9 @@ import lombok.Data;
 @Data
 public class AddToCartRequest {
 
+	@NotNull(message = "user id is required")
+	private Long userId;
+	
 	@NotNull(message = "Food item ID is required")
 	private Long foodItemId;
 

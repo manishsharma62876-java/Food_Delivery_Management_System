@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 public class UpdateCartItemRequest {
 
-	@Min(value = 0, message = "Quantity cannot be negative")
+	@Min(value = 1, message = "Quantity cannot be negative")
 	private int quantity;
+	
 }

@@ -1,5 +1,8 @@
 package com.manish.entity;
 
-public class Role {
+public enum Role {
 
+	USER,
+	ADMIN
+	
 }
