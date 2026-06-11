@@ -24,13 +24,11 @@ import com.manish.service.CartService;
 @RequestMapping("/api/cart")
 public class CartController {
 
-	private final CartItemRepository cartItemRepository;
+	@Autowired
+	private  CartItemRepository cartItemRepository;
+	
 	@Autowired
 	private CartService cartService;
-
-	CartController(CartItemRepository cartItemRepository) {
-		this.cartItemRepository = cartItemRepository;
-	}
 
 	@PostMapping("/add")
 	public ResponseEntity<ApiResponse<CartResponse>> addToCart(@RequestBody AddToCartRequest request) {

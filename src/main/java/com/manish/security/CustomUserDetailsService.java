@@ -1,16 +1,14 @@
 package com.manish.security;
 
-import java.util.Collections;
+import java.util.List;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
 import com.manish.entity.User;
 import com.manish.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -29,8 +27,7 @@ public class CustomUserDetailsService
                 userRepository.findByEmail(email)
                         .orElseThrow(() ->
                                 new UsernameNotFoundException(
-                                        "User not found with email : "
-                                                + email
+                                        "User not found with email : " + email
                                 ));
 
         return new org.springframework.security.core.userdetails.User(
@@ -39,9 +36,10 @@ public class CustomUserDetailsService
 
                 user.getPassword(),
 
-                Collections.singletonList(
+                List.of(
 
                         new SimpleGrantedAuthority(
+
                                 "ROLE_" + user.getRole().name()
                         )
                 )

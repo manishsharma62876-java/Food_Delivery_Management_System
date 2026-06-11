@@ -15,4 +15,10 @@ public class RegisterRequest {
 
 	@NotBlank
 	private String password;
+	
+    @NotBlank
+	private String address;
+    
+    @NotBlank
+    private String phone;
 }

@@ -25,7 +25,6 @@ import com.manish.service.OrderService;
 public class OrderController {
 
 	@Autowired
-
 	private OrderService orderService;
 
 	@PostMapping("/place")

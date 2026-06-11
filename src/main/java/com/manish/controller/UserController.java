@@ -30,9 +30,7 @@ public class UserController {
 
 	@PostMapping("/save")
 	public ResponseEntity<ApiResponse<UserResponse>> createUser(@RequestBody UserRequest request){
-		return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("User created successfullyy",userService.createUser(request)));
-	}
-	
+	return ResponseEntity.status(HttpStatus.CREATED).body(ApiResponse.success("User created successfullyy",userService.createUser(request)));}
 	@GetMapping("/allUsers")
 	public ResponseEntity<ApiResponse<List<UserResponse>>> getAllUsers(){
 	return ResponseEntity.ok(ApiResponse.success("All users fetched successfuly",userService.getAllUsers()));

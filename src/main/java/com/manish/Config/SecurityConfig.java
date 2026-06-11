@@ -3,55 +3,82 @@ package com.manish.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import com.manish.security.CustomUserDetailsService;
+import com.manish.security.JwtAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-	@Bean
-	PasswordEncoder passwordEncoder() {
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomUserDetailsService customUserDetailsService;
 
-		return new BCryptPasswordEncoder();
-	}
+    @Bean
+    public PasswordEncoder passwordEncoder() {
 
-	@Bean
-	AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return new BCryptPasswordEncoder();
+    }
 
-		return config.getAuthenticationManager();
-	}
+    @Bean
+    public DaoAuthenticationProvider authenticationProvider() {
 
-	@Bean
-	SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        DaoAuthenticationProvider authProvider =
+                new DaoAuthenticationProvider(customUserDetailsService);
 
-		http
+        authProvider.setPasswordEncoder(passwordEncoder());
 
-				.csrf(csrf -> csrf.disable())
+        return authProvider;
+    }
 
-				.sessionManagement(session ->
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration config)
+            throws Exception {
 
-				session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        return config.getAuthenticationManager();
+    }
 
-				.authorizeHttpRequests(auth -> auth
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http)
+            throws Exception {
 
-						.requestMatchers(
+        http
+                .csrf(csrf -> csrf.disable())
 
-								"/api/auth/**",
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS))
 
-								"/swagger-ui/**",
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(
+                                "/api/auth/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**"
+                        )
+                        .permitAll()
 
-								"/v3/api-docs/**"
+                        .anyRequest()
+                        .authenticated())
 
-						).permitAll()
+                .authenticationProvider(authenticationProvider())
 
-						.anyRequest()
+                .addFilterBefore(
+                        jwtAuthenticationFilter,
+                        UsernamePasswordAuthenticationFilter.class
+                );
 
-						.authenticated());
-
-		return http.build();
-	}
+        return http.build();
+    }
 }
